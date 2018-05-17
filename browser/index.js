@@ -122,12 +122,17 @@ module.exports = {
                 let searcher = searchers[this.props.searcher];
 
                 let me = this;
-                searcher.handleSearch(e.target.id).then(function (fulfilled) {
-                    let items = fulfilled.map((item) => {
-                        return item.tekst.toString();
-                    });
-                    me.setState({items: items});
-                });
+                searcher.handleSearch(e.target.id).then(
+                    function (fulfilled) {
+                        let items = fulfilled.map((item) => {
+                            return item.tekst.toString();
+                        });
+                        me.setState({items: items});
+                    },
+                    function (err) {
+                        console.error(err)
+                    }
+                );
             }
 
             render() {
@@ -139,7 +144,6 @@ module.exports = {
                                 searcher={me.props.searcher}
                                 value={item.title}/>
                 );
-
 
                 return (
                     <div onClick={this.props.onAdd} className="list-group">{searchItems}</div>
@@ -162,7 +166,7 @@ module.exports = {
                                      searcher={searcher}
                     />;
                 });
-                return <div className="list-group">{list}</div>;
+                return <div key={list} className="list-group">{list}</div>;
             }
         }
 
@@ -267,11 +271,14 @@ module.exports = {
 
                 currentSearcher[_searcher] = this.searchers[_searcher];
                 searcher.handleSearch(searchTerm).then((res) => {
-                    me.setState({searchRes: res});
-                    me.setState({searchReady: false});
-                    me.setState({searchDetailReady: true});
-                })
-
+                        me.setState({searchRes: res});
+                        me.setState({searchReady: false});
+                        me.setState({searchDetailReady: true});
+                    },
+                    (res) => {
+                        console.error(res)
+                    }
+                )
 
             }
 
@@ -303,12 +310,16 @@ module.exports = {
                 var me = this;
                 let _res = {};
                 Object.keys(currentSearchers).map((key) => {
-                    currentSearchers[key]['searcher'].search(_searchTerm).then(function (fulfilled) {
-                        _res[key] = fulfilled;
-                        me.setState({searchResults: _res});
-                        me.setState({searchReady: true});
-                        me.setState({reset: false});
-                    });
+                    currentSearchers[key]['searcher'].search(_searchTerm).then(
+                        function (fulfilled) {
+                            _res[key] = fulfilled;
+                            me.setState({searchResults: _res});
+                            me.setState({searchReady: true});
+                            me.setState({reset: false});
+                        },
+                        function (err) {
+                            console.error(err);
+                        });
                 })
             }
 
@@ -327,7 +338,7 @@ module.exports = {
 
                     let hitsList1 = _keys.map(key => {
                         let temp = [{id: 'all', title: this.searchers[key]['title']}];
-                        return <SearchList items={temp} searcher={key} onAdd={this.selectSearcher}/>;
+                        return <SearchList key={key} items={temp} searcher={key} onAdd={this.selectSearcher}/>;
 
                     });
 
@@ -354,7 +365,6 @@ module.exports = {
                             <div>{searchRes1}</div>
                         </div>;
                     }
-
                 }
 
                 if (this.state.currentSearcherName) {
@@ -363,7 +373,6 @@ module.exports = {
                     </button>
                 } else { //console.log('searcherName empty');
                 }
-
 
                 return (
                     <div role="tabpanel">
@@ -375,10 +384,8 @@ module.exports = {
                                     <div className="btn-group">
                                         <input id="my-search" className="custom-search typeahead" type="text"
                                                placeholder="search" onChange={this.handleChange}>
-
                                         </input>
                                         {searcherButton}
-
 
                                     </div>
 
