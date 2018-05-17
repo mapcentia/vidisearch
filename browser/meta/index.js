@@ -92,7 +92,7 @@ module.exports = {
                 let res = data.hits.hits.map((item) => {
                     let it = item['_source']['properties'];
                     items[it._key_] = item['_source'];
-                    return {'title': it._key_, 'id': it._key_};
+                    return {'title': it.f_table_title || _it._key_, 'id': it._key_};
                 });
                 resolve(res);
             }, 'json');
@@ -108,7 +108,7 @@ module.exports = {
 
             meta = properties.meta;
             name = properties.f_table_name;
-            title = properties.f_table_title || properties.f_table_name;
+            title = properties.f_table_title || properties._key_;
             abstract = properties.f_table_abstract;
             html = (meta !== null
                 && typeof meta.meta_desc !== "undefined"
