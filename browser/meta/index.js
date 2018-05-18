@@ -57,7 +57,7 @@ module.exports = {
     },
 
     search: function (searchTerm) {
-        let url = config.gc2.host + '/api/v2/elasticsearch/search/' + db + '/settings';
+        let url = config.gc2.host + '/api/v2/elasticsearch/search/' + db + '/settings/geometry_columns_view';
         let query = {
             "size": 100,
             "query": {
@@ -100,7 +100,7 @@ module.exports = {
                 let res = data.hits.hits.map((item) => {
                     let it = item['_source']['properties'];
                     items[it._key_] = item['_source'];
-                    return {'title': it.f_table_title || it._key_, 'id': it._key_};
+                    return {'title': (it.f_table_title || it.f_table_name) + " (" + it.f_table_schema +")", 'id': it._key_};
                 });
                 resolve(res);
             }, 'json');
