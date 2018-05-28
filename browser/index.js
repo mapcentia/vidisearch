@@ -388,7 +388,7 @@ module.exports = {
 
                     let searchRes1 = _keys.map((key) => {
                         let temp = [{id: 'all', title: this.searchers[key]['title']}];
-                        let _items = _length === 1 ? this.state.searchResults[key] : this.state.searchResults[key].slice(0, 5);
+                        let _items = _length === 1 ? this.state.searchResults[key] : this.state.searchResults[key].slice(0, 10);
                         if (_length === 1) {
                             hitsList1 = '';
                         }
