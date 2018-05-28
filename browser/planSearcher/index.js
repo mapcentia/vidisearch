@@ -129,7 +129,6 @@ module.exports = {
 
             $.getJSON(url,function(data){
                 let geom = data.features[0].geometry;
-                console.log(geom);
                 let properties = data.features[0].properties;
                 let layer = L.geoJson(geom,{
                     "color": "blue",
@@ -140,7 +139,6 @@ module.exports = {
                 });
     
                 layerGroup.clearLayers();
-                console.log(layer);
                 layerGroup.addLayer(layer).addTo(mapObj);
                 mapObj.fitBounds(layer.getBounds());
                let comp = <div>

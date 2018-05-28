@@ -29,6 +29,8 @@ var config = require('../../../config/config.js');
 
 var _searchers = {};
 
+var _lastBounds;
+
 var crss = {
     "from": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs",
     "to": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -57,7 +59,6 @@ module.exports = {
 
     init: function () {
         utils.createMainTab(exId, __("Main Search!"), __("Search prototype...."), require('./../../../browser/modules/height')().max);
-        // console.log(config.extensionConfig.mainSearch);
 
         var currentSearcher = {};
 
@@ -67,7 +68,7 @@ module.exports = {
 
                 this.state = {
                     hover: false
-                }
+                };
                 this.hoverOn = this.hoverOn.bind(this);
                 this.hoverOff = this.hoverOff.bind(this);
             }
@@ -99,55 +100,40 @@ module.exports = {
 
         }
 
-        class SearcherText extends React.Component {
-            constructor(props) {
-                super(props);
-            }
-        }
-
         class SearchList extends React.Component {
 
             constructor(props) {
                 super(props);
                 // this.searcher = this.props.searcher;
-                this.onItemClick = this.onItemClick.bind(this);
 
                 this.state = {
                     items: this.props.items
                 };
             }
 
-            onItemClick(e) {
-                //   console.log(e.target.id);
-                let searcher = searchers[this.props.searcher];
-
-                let me = this;
-                searcher.handleSearch(e.target.id).then(
-                    function (fulfilled) {
-                        let items = fulfilled.map((item) => {
-                            return item.tekst.toString();
-                        });
-                        me.setState({items: items});
-                    },
-                    function (err) {
-                        console.error(err)
-                    }
-                );
-            }
-
             render() {
                 const items = this.props.items;
                 let me = this;
-                const searchItems = items.map((item, index) =>
-                    <SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
-                                id={item.id.toString()}
-                                searcher={me.props.searcher}
-                                value={item.title}/>
-                );
+                let searchItems;
 
-                return (
-                    <div onClick={this.props.onAdd} className="list-group">{searchItems}</div>
-                );
+                if (items.length > 0) {
+                    searchItems = items.map((item, index) =>
+                        <SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
+                                    id={item.id.toString()}
+                                    searcher={me.props.searcher}
+                                    value={item.title}/>
+                    );
+
+                    return (
+                        <div onClick={this.props.onAdd} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} className="list-group">{searchItems}</div>
+                    );
+
+                } else {
+                    searchItems = [<div key="d" className="list-group"><i style={{"padding": "4px 16px"}} >-</i></div>]
+                    return (
+                        <div className="list-group">{searchItems}</div>
+                    );
+                }
             }
         }
 
@@ -186,10 +172,10 @@ module.exports = {
                     className="list-group-item"
                 >
                     {this.props.searcher}
+
                 </a>;
             }
         }
-
 
         class MainSearch extends React.Component {
             constructor(props) {
@@ -210,6 +196,8 @@ module.exports = {
 
                 this.handleChange = this.handleChange.bind(this);
                 this.handleClick = this.handleClick.bind(this);
+                this.handleMouseOver = this.handleMouseOver.bind(this);
+                this.handleMouseOut = this.handleMouseOut.bind(this);
                 this.handleSearcherClick = this.handleSearcherClick.bind(this);
                 this.selectSearcher = this.selectSearcher.bind(this);
 
@@ -246,23 +234,77 @@ module.exports = {
                 return <SearchersList searchers={searcherNames}/>;
             }
 
+
             handleSearcherClick(e) {
                 this.setState({
-                    currentSearcherName: '',
-                    searchTerm: ''
-                    //  reset : true
+                    currentSearcherName: ''
                 });
-                this.doSearch('', '');
+                // Refresh search
+                console.log("SEARCH");
+                cloud.get().map.fitBounds(_lastBounds);
+                this.doSearch('', this.state.searchTerm);
+            }
+            handleMouseOver(e) {
+                let me = this;
+                let _searcher, searchTerm;
+                [_searcher, searchTerm] = e.target.id.split(':');
+                let searcher = this.searchers[_searcher]['searcher'];
+                /*
+                    set the currentSearcher. From now on, only this searcher will be called
+                    when the user writes in the input box.
+                */
+                // console.log('currentSEarhcer :' + _searcher);
+                //me.setState({currentSearcherName: _searcher});
 
+                currentSearcher[_searcher] = this.searchers[_searcher];
+                if (searcher.handleMouseOver !== undefined) {
+                    searcher.handleMouseOver(searchTerm).then(
+                        (res) => {
+
+                        },
+                        (res) => {
+                            console.error(res)
+                        }
+                    );
+
+                }
+            }
+
+            handleMouseOut(e) {
+                let me = this;
+                let _searcher, searchTerm;
+                [_searcher, searchTerm] = e.target.id.split(':');
+                let searcher = this.searchers[_searcher]['searcher'];
+                /*
+                    set the currentSearcher. From now on, only this searcher will be called
+                    when the user writes in the input box.
+                */
+                // console.log('currentSEarhcer :' + _searcher);
+                //me.setState({currentSearcherName: _searcher});
+
+                currentSearcher[_searcher] = this.searchers[_searcher];
+                if (searcher.handleMouseOut !== undefined) {
+                    searcher.handleMouseOut(searchTerm).then(
+                        (res) => {
+
+                        },
+                        (res) => {
+                            console.error(res)
+                        }
+                    );
+
+                }
             }
 
             handleClick(e) {
                 let me = this;
                 let _searcher, searchTerm;
+
+                _lastBounds = cloud.get().map.getBounds();
+
                 [_searcher, searchTerm] = e.target.id.split(':');
                 let searcher = this.searchers[_searcher]['searcher'];
-                me.setState({searchTerm: searchTerm});
-                /* 
+                /*
                     set the currentSearcher. From now on, only this searcher will be called 
                     when the user writes in the input box.
                 */
@@ -270,7 +312,8 @@ module.exports = {
                 me.setState({currentSearcherName: _searcher});
 
                 currentSearcher[_searcher] = this.searchers[_searcher];
-                searcher.handleSearch(searchTerm).then((res) => {
+                searcher.handleSearch(searchTerm).then(
+                    (res) => {
                         me.setState({searchRes: res});
                         me.setState({searchReady: false});
                         me.setState({searchDetailReady: true});
@@ -279,7 +322,6 @@ module.exports = {
                         console.error(res)
                     }
                 )
-
             }
 
             selectSearcher(e) {
@@ -343,15 +385,20 @@ module.exports = {
                     });
 
                     let searchRes1 = _keys.map((key) => {
-                        let _items = _length == 1 ? this.state.searchResults[key] : this.state.searchResults[key].slice(0, 5);
-                        if (_length == 1) {
+                        let temp = [{id: 'all', title: this.searchers[key]['title']}];
+                        let _items = _length === 1 ? this.state.searchResults[key] : this.state.searchResults[key].slice(0, 5);
+                        if (_length === 1) {
                             hitsList1 = '';
                         }
                         let t = <div key={key}>
-                            <h5>{this.searchers[key]['title']}</h5>
+                            <h5>
+                                <SearchList items={temp} searcher={key} onAdd={this.selectSearcher}/>
+                            </h5>
                             <SearchList items={_items}
                                         searcher={key}
                                         onAdd={this.handleClick}
+                                        onMouseOver={this.handleMouseOver}
+                                        onMouseOut={this.handleMouseOut}
                             />
                         </div>;
                         return t;
@@ -361,7 +408,6 @@ module.exports = {
                         searchRes = <div></div>;
                     } else {
                         searchRes = <div>
-                            <div>{hitsList1}</div>
                             <div>{searchRes1}</div>
                         </div>;
                     }

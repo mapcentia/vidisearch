@@ -65,6 +65,10 @@ module.exports = {
                     "should": [
                         {
                             "term": {
+                                "properties.f_table_name": searchTerm
+                            }
+                        }, {
+                            "term": {
                                 "properties.f_table_title": searchTerm
                             }
                         }, {
@@ -84,7 +88,7 @@ module.exports = {
                         }
                     ],
 
-                    "minimum_should_match" : 1,
+                    "minimum_should_match": 1,
 
                     "filter": [{
                         "term": {
@@ -100,7 +104,10 @@ module.exports = {
                 let res = data.hits.hits.map((item) => {
                     let it = item['_source']['properties'];
                     items[it._key_] = item['_source'];
-                    return {'title': (it.f_table_title || it.f_table_name) + " (" + it.f_table_schema +")", 'id': it._key_};
+                    return {
+                        'title': (it.f_table_title || it.f_table_name) + " (" + it.f_table_schema + ")",
+                        'id': it._key_
+                    };
                 });
                 resolve(res);
             }, 'json');
