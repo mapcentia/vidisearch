@@ -125,11 +125,12 @@ module.exports = {
                     );
 
                     return (
-                        <div onClick={this.props.onAdd} onMouseOver={this.props.onMouseOver} onMouseOut={this.props.onMouseOut} className="list-group">{searchItems}</div>
+                        <div onClick={this.props.onAdd} onMouseOver={this.props.onMouseOver}
+                             onMouseOut={this.props.onMouseOut} className="list-group">{searchItems}</div>
                     );
 
                 } else {
-                    searchItems = [<div key="d" className="list-group"><i style={{"padding": "4px 16px"}} >-</i></div>]
+                    searchItems = [<div key="d" className="list-group"><i style={{"padding": "4px 16px"}}>-</i></div>]
                     return (
                         <div className="list-group">{searchItems}</div>
                     );
@@ -244,6 +245,7 @@ module.exports = {
                 cloud.get().map.fitBounds(_lastBounds);
                 this.doSearch('', this.state.searchTerm);
             }
+
             handleMouseOver(e) {
                 let me = this;
                 let _searcher, searchTerm;
@@ -424,21 +426,14 @@ module.exports = {
                     <div role="tabpanel">
                         <div className="panel panel-default">
                             <div className="panel-body">
-
                                 <div className="form-group">
-
-                                    <div className="btn-group">
-                                        <input id="my-search" className="custom-search typeahead" type="text"
-                                               placeholder="search" onChange={this.handleChange}>
-                                        </input>
-                                        {searcherButton}
-
-                                    </div>
+                                    <input id="my-search" className="custom-search typeahead" type="text"
+                                           placeholder="Søg" onChange={this.handleChange}>
+                                    </input>
+                                    {searcherButton}
 
                                 </div>
-
                                 {searchRes}
-
                             </div>
                         </div>
                     </div>
@@ -446,15 +441,9 @@ module.exports = {
             }
         }
 
-        try {
-
-            ReactDOM.render(
-                <MainSearch/>,
-                document.getElementById(exId)
-            );
-        } catch (e) {
-
-        }
-
+        ReactDOM.render(
+            <MainSearch/>,
+            document.getElementById(exId)
+        );
     }
 };
