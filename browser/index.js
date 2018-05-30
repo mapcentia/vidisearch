@@ -441,9 +441,11 @@ module.exports = {
             }
         }
 
-        ReactDOM.render(
-            <MainSearch/>,
-            document.getElementById(exId)
-        );
+        try {
+            ReactDOM.render(
+                <MainSearch/>,
+                document.getElementById(exId)
+            );
+        } catch (e) {}
     }
 };
