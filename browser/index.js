@@ -93,7 +93,7 @@ module.exports = {
                     onMouseEnter={this.hoverOn}
                     onMouseLeave={this.hoverOff}
                 >
-                    {this.props.value}
+                    {this.props.value} {this.props.count ? " (" + this.props.count + ")": ""}
                 </a>;
             }
 
@@ -121,7 +121,9 @@ module.exports = {
                         <SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
                                     id={item.id.toString()}
                                     searcher={me.props.searcher}
-                                    value={item.title}/>
+                                    value={item.title}
+                                    count={me.props.count}
+                        />
                     );
 
                     return (
@@ -394,7 +396,7 @@ module.exports = {
                         }
                         let t = <div key={key}>
                             <h5>
-                                <SearchList items={temp} searcher={key} onAdd={this.selectSearcher}/>
+                                <SearchList items={temp} searcher={key} onAdd={this.selectSearcher} count={_items.length}/>
                             </h5>
                             <SearchList items={_items}
                                         searcher={key}
