@@ -93,7 +93,7 @@ module.exports = {
                     onMouseEnter={this.hoverOn}
                     onMouseLeave={this.hoverOff}
                 >
-                    {this.props.value} {this.props.count ? " (" + this.props.count + ")": ""}
+                    {this.props.value} {this.props.count ? " (" + this.props.count + ")" : ""}
                 </a>;
             }
 
@@ -396,7 +396,8 @@ module.exports = {
                         }
                         let t = <div key={key}>
                             <h5>
-                                <SearchList items={temp} searcher={key} onAdd={this.selectSearcher} count={_items.length}/>
+                                <SearchList items={temp} searcher={key} onAdd={this.selectSearcher}
+                                            count={_items.length}/>
                             </h5>
                             <SearchList items={_items}
                                         searcher={key}
@@ -426,18 +427,14 @@ module.exports = {
 
                 return (
                     <div role="tabpanel">
-                        <div className="panel panel-default">
-                            <div className="panel-body">
-                                <div className="form-group">
-                                    <input id="my-search" className="custom-search typeahead" type="text"
-                                           placeholder="Søg" onChange={this.handleChange}>
-                                    </input>
-                                    {searcherButton}
+                        <div className="form-group">
+                            <input id="my-search" className="custom-search typeahead" type="text"
+                                   placeholder="Søg" onChange={this.handleChange}>
+                            </input>
+                            {searcherButton}
 
-                                </div>
-                                {searchRes}
-                            </div>
                         </div>
+                        {searchRes}
                     </div>
                 );
             }
@@ -448,6 +445,7 @@ module.exports = {
                 <MainSearch/>,
                 document.getElementById(exId)
             );
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 };
