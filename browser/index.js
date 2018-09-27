@@ -7,15 +7,7 @@ var React = require('react');
 
 var ReactDOM = require('react-dom');
 
-var reproject = require('reproject');
-
-var proj4 = require('proj4');
-
-var wktParser = require('terraformer-wkt-parser');
-
 var cloud;
-
-var layerGroup = L.layerGroup();
 
 var utils;
 
@@ -25,16 +17,9 @@ var exId = "mainSearch";
 
 var backboneEvents;
 
-var config = require('../../../config/config.js');
-
 var _searchers = {};
 
 var _lastBounds;
-
-var crss = {
-    "from": "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs",
-    "to": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-};
 
 module.exports = {
     set: function (o) {
@@ -58,7 +43,7 @@ module.exports = {
     },
 
     init: function () {
-        utils.createMainTab(exId, __("Main Search!"), __("Search prototype...."), require('./../../../browser/modules/height')().max);
+        utils.createMainTab(exId, __("Search"), __("Search on farm names."), require('./../../../browser/modules/height')().max);
 
         var currentSearcher = {};
 
