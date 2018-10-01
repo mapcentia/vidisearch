@@ -43,7 +43,7 @@ module.exports = {
     },
 
     init: function () {
-        utils.createMainTab(exId, __("Search"), __("Search on farm names."), require('./../../../browser/modules/height')().max);
+        utils.createMainTab(exId, __("Search"), __("Her kan du søge i rapporterne. I feltet skrives de ønskede søgeord. Der søges fra venstre side af hele ord. Fx for at finde ordet 'kviksølv', starter du med at skrive 'kvik...' og der vil dukke rapporter op med ord, som starter med 'kvik'. Hvis der skrives 'sølv', vil ordet 'kviksølv' ikke blive fundet."), require('./../../../browser/modules/height')().max);
 
         var currentSearcher = {};
 
