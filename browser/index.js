@@ -102,13 +102,14 @@ module.exports = {
                 let searchItems;
 
                 if (items.length > 0) {
-                    searchItems = items.map((item, index) =>
-                        <SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
+                    searchItems = items.map((item, index) => {
+                        if (item.id === null) return;
+                        return (<SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
                                     id={item.id.toString()}
                                     searcher={me.props.searcher}
                                     value={item.title}
                                     count={me.props.count}
-                        />
+                        />)}
                     );
 
                     return (
