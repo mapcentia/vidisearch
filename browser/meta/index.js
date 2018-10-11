@@ -88,7 +88,7 @@ module.exports = {
                         }
                     ],
 
-                    "minimum_should_match": 1,
+                    "minimum_should_match": 1
 
                     // "filter": [{
                     //     "term": {
