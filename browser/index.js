@@ -415,7 +415,7 @@ module.exports = {
                     <div role="tabpanel">
                         <div className="form-group">
                             <input id="my-search" className="custom-search typeahead" type="text"
-                                   placeholder="Søg" onChange={this.handleChange}>
+                                   placeholder="Search" onChange={this.handleChange}>
                             </input>
                             {searcherButton}
 
