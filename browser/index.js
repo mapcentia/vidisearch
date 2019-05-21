@@ -103,13 +103,14 @@ module.exports = {
 
                 if (items.length > 0) {
                     searchItems = items.map((item, index) => {
-                        if (item.id === null) return;
-                        return (<SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
-                                    id={item.id.toString()}
-                                    searcher={me.props.searcher}
-                                    value={item.title}
-                                    count={me.props.count}
-                        />)}
+                            if (item.id === null) return;
+                            return (<SearchItem key={index + ':' + me.props.searcher + ':' + item.id}
+                                                id={item.id.toString()}
+                                                searcher={me.props.searcher}
+                                                value={item.title}
+                                                count={me.props.count}
+                            />)
+                        }
                     );
 
                     return (
@@ -184,6 +185,7 @@ module.exports = {
                 this.searchers = _searchers;
 
                 this.handleChange = this.handleChange.bind(this);
+                this.handleCheck = this.handleCheck.bind(this);
                 this.handleClick = this.handleClick.bind(this);
                 this.handleMouseOver = this.handleMouseOver.bind(this);
                 this.handleMouseOut = this.handleMouseOut.bind(this);
@@ -315,7 +317,7 @@ module.exports = {
             }
 
             selectSearcher(e) {
-                var me = this; //console.log(me);
+                let me = this; //console.log(me);
                 // console.log(e.target.id);
                 let _searcher = e.target.id.split(':')[0];
                 // let searcher = _searchers[_searcher]['searcher']; console.log(searcher);
@@ -330,6 +332,10 @@ module.exports = {
                 this.delayedCallback(e);
             }
 
+            handleCheck(e) {
+                this.doSearch(this.state.currentSearcherName, this.state.searchTerm)
+            }
+
             doSearch(searcherName, _searchTerm) {
                 let currentSearchers = {};
 
@@ -339,7 +345,7 @@ module.exports = {
                     currentSearchers[searcherName] = this.searchers[searcherName];
                 }
                 this.setState({searchResults: {}});
-                var me = this;
+                let me = this;
                 let _res = {};
                 Object.keys(currentSearchers).map((key) => {
                     currentSearchers[key]['searcher'].search(_searchTerm).then(
@@ -363,6 +369,9 @@ module.exports = {
 
                 let searchRes = this.state.searchRes;
                 let searcherButton = '';
+                let checkStyle = {
+                    marginRight: '30px'
+                };
                 if (this.state.searchReady) {
 
                     let _keys = Object.keys(this.state.searchResults);
@@ -412,15 +421,31 @@ module.exports = {
                 }
 
                 return (
-                    <div role="tabpanel">
-                        <div className="form-group">
-                            <input id="my-search" className="custom-search typeahead" type="text"
-                                   placeholder="Search" onChange={this.handleChange}>
-                            </input>
-                            {searcherButton}
-
+                    <div>
+                        <span className="togglebutton" style={checkStyle}>
+                            <label><input id="search_tags"
+                                          type="checkbox" onChange={this.handleCheck} />Tags
+                            </label>
+                        </span>
+                        <span className="togglebutton" style={checkStyle}>
+                            <label><input id="search_omraade"
+                                          type="checkbox" onChange={this.handleCheck} />Område
+                            </label>
+                        </span>
+                        <span className="togglebutton" style={checkStyle}>
+                            <label><input id="search_text"
+                                          type="checkbox" onChange={this.handleCheck} />Tekst
+                            </label>
+                        </span>
+                        <div role="tabpanel">
+                            <div className="form-group">
+                                <input id="my-search" className="custom-search typeahead" type="text"
+                                       placeholder="Search" onChange={this.handleChange}>
+                                </input>
+                                {searcherButton}
+                            </div>
+                            {searchRes}
                         </div>
-                        {searchRes}
                     </div>
                 );
             }
