@@ -175,6 +175,9 @@ module.exports = {
                     currentSearcherName: '',
                     dataReady: false,
                     searchTerm: '',
+                    tagValue: props.tagValue,
+                    textValue: props.textValue,
+                    omraadeValue: props.omraadeValue,
                     searchResults: {},
                     searchReady: false,
                     searchDetailReady: false,
@@ -210,7 +213,7 @@ module.exports = {
                     } else {
                         currentSearchers = me.searchers;
                     }
-                    me.doSearch(this.state.currentSearcherName, val);
+                    me.doSearch(this.state.currentSearcherName, val, e);
                 }, 400);
             }
 
@@ -329,6 +332,7 @@ module.exports = {
 
             handleChange(e) {
                 e.persist();
+
                 this.delayedCallback(e);
             }
 
@@ -336,7 +340,7 @@ module.exports = {
                 this.doSearch(this.state.currentSearcherName, this.state.searchTerm)
             }
 
-            doSearch(searcherName, _searchTerm) {
+            doSearch(searcherName, _searchTerm, e) {
                 let currentSearchers = {};
 
                 if (searcherName === '') {
@@ -348,7 +352,7 @@ module.exports = {
                 let me = this;
                 let _res = {};
                 Object.keys(currentSearchers).map((key) => {
-                    currentSearchers[key]['searcher'].search(_searchTerm).then(
+                    currentSearchers[key]['searcher'].search(_searchTerm, e).then(
                         function (fulfilled) {
                             _res[key] = fulfilled;
                             me.setState({searchResults: _res});
@@ -422,30 +426,36 @@ module.exports = {
 
                 return (
                     <div>
-                        <span className="togglebutton" style={checkStyle}>
-                            <label><input id="search_tags"
-                                          type="checkbox" onChange={this.handleCheck} />Tags
-                            </label>
-                        </span>
-                        <span className="togglebutton" style={checkStyle}>
-                            <label><input id="search_omraade"
-                                          type="checkbox" onChange={this.handleCheck} />Område
-                            </label>
-                        </span>
-                        <span className="togglebutton" style={checkStyle}>
-                            <label><input id="search_text"
-                                          type="checkbox" onChange={this.handleCheck} />Tekst
-                            </label>
-                        </span>
                         <div role="tabpanel">
+                            <h2>Harboøre Tange</h2>
+
                             <div className="form-group">
-                                <input id="my-search" className="custom-search typeahead" type="text"
-                                       placeholder="Search" onChange={this.handleChange}>
+
+                                <input id="tag-search" className="form-control" type="text"
+                                       placeholder="Tag" onChange={this.handleChange} value={this.state.tagValue}>
                                 </input>
-                                {searcherButton}
                             </div>
-                            {searchRes}
+                            <div className="form-group">
+
+                                <input id="text-search" className="form-control" type="text"
+                                       placeholder="Tekst" onChange={this.handleChange} value={this.state.textValue}>
+                                </input>
+                            </div>
+                            <div className="form-group">
+                                <select id="omraade-search" className="form-control" onChange={this.handleChange}
+                                        value={this.state.omraadeValue} defaultValue={"Vælg område"}>
+                                    <option disabled>Vælg område</option>
+                                    <option value={"rønland"}>rønland</option>
+                                    <option value={"gl fabrik"}>gl fabrik</option>
+                                    <option value={"høfde 42"}>høfde 42</option>
+                                    <option value={"cheminovahullet"}>cheminovahullet</option>
+                                    <option value={"knopper enge"}>knopper enge</option>
+                                    <option value={"nissum bredning"}>nissum bredning</option>
+                                </select>
+                            </div>
+                            {searcherButton}
                         </div>
+                        {searchRes}
                     </div>
                 );
             }
