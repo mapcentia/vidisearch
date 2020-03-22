@@ -200,7 +200,13 @@ module.exports = {
             componentWillMount() {
                 this.delayedCallback = _.debounce(function (e) {
                     // `e.target` is accessible now
-                    var me = this;
+                    let me = this;
+                    let searchObj = {
+                        textValue: me.textValue.value,
+                        tagValue: me.tagValue.value,
+                        omraadeValue: me.omraadeValue.value,
+                    };
+
                     let val = e.target.value;
                     let _res = {}; //Object.assign({}, me.state.searchResults);
                     me.setState({searchTerm: val});
@@ -213,7 +219,7 @@ module.exports = {
                     } else {
                         currentSearchers = me.searchers;
                     }
-                    me.doSearch(this.state.currentSearcherName, val, e);
+                    me.doSearch(this.state.currentSearcherName, searchObj, e);
                 }, 400);
             }
 
@@ -236,7 +242,13 @@ module.exports = {
                 // Refresh search
                 console.log("SEARCH");
                 cloud.get().map.fitBounds(_lastBounds);
-                this.doSearch('', this.state.searchTerm);
+                let me = this;
+                let searchObj = {
+                    textValue: me.textValue.value,
+                    tagValue: me.tagValue.value,
+                    omraadeValue: me.omraadeValue.value,
+                };
+                this.doSearch('', searchObj);
             }
 
             handleMouseOver(e) {
@@ -431,20 +443,21 @@ module.exports = {
 
                             <div className="form-group">
 
-                                <input id="tag-search" className="form-control" type="text"
+                                <input id="tag-search" className="form-control" type="text" ref={(input) => this.tagValue = input}
                                        placeholder="Tag" onChange={this.handleChange} value={this.state.tagValue}>
                                 </input>
                             </div>
                             <div className="form-group">
 
-                                <input id="text-search" className="form-control" type="text"
+                                <input id="text-search" className="form-control" type="text" ref={(input) => this.textValue = input}
                                        placeholder="Tekst" onChange={this.handleChange} value={this.state.textValue}>
                                 </input>
                             </div>
                             <div className="form-group">
-                                <select id="omraade-search" className="form-control" onChange={this.handleChange}
+                                <select id="omraade-search" className="form-control" ref={(input) => this.omraadeValue = input} onChange={this.handleChange}
                                         value={this.state.omraadeValue} defaultValue={"Vælg område"}>
                                     <option disabled>Vælg område</option>
+                                    <option value={""}></option>
                                     <option value={"rønland"}>rønland</option>
                                     <option value={"gl fabrik"}>gl fabrik</option>
                                     <option value={"høfde 42"}>høfde 42</option>
