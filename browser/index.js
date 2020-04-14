@@ -178,6 +178,7 @@ module.exports = {
                     tagValue: props.tagValue,
                     textValue: props.textValue,
                     omraadeValue: props.omraadeValue,
+                    refValue: props.refValue,
                     searchResults: {},
                     searchReady: false,
                     searchDetailReady: false,
@@ -205,6 +206,7 @@ module.exports = {
                         textValue: me.textValue.value,
                         tagValue: me.tagValue.value,
                         omraadeValue: me.omraadeValue.value,
+                        refValue: me.refValue.value,
                     };
 
                     let val = e.target.value;
@@ -247,6 +249,7 @@ module.exports = {
                     textValue: me.textValue.value,
                     tagValue: me.tagValue.value,
                     omraadeValue: me.omraadeValue.value,
+                    refValue: me.refValue.value,
                 };
                 this.doSearch('', searchObj);
             }
@@ -441,18 +444,20 @@ module.exports = {
                         <div role="tabpanel">
                             <h2>Harboøre Tange</h2>
 
-                            <div className="form-group">
+                            <a href="https://rm.mapcentia.com/api/v2/sql/roenland_gl_fabrik?q=select%20*%20from%20hoefde42.tags&format=excel">Hent Ecxel ark med mulige tags</a>
 
+                            <div className="form-group">
                                 <input id="tag-search" className="form-control" type="text" ref={(input) => this.tagValue = input}
                                        placeholder="Tag" onChange={this.handleChange} value={this.state.tagValue}>
                                 </input>
                             </div>
-                            <div className="form-group">
 
+                            <div className="form-group">
                                 <input id="text-search" className="form-control" type="text" ref={(input) => this.textValue = input}
                                        placeholder="Tekst" onChange={this.handleChange} value={this.state.textValue}>
                                 </input>
                             </div>
+
                             <div className="form-group">
                                 <select id="omraade-search" className="form-control" ref={(input) => this.omraadeValue = input} onChange={this.handleChange}
                                         value={this.state.omraadeValue} defaultValue={"Vælg område"}>
@@ -466,6 +471,13 @@ module.exports = {
                                     <option value={"nissum bredning"}>nissum bredning</option>
                                 </select>
                             </div>
+
+                            <div className="form-group">
+                                <input id="text-search" className="form-control" type="text" ref={(input) => this.refValue = input}
+                                       placeholder="Reference" onChange={this.handleChange} value={this.state.refValue}>
+                                </input>
+                            </div>
+
                             {searcherButton}
                         </div>
                         {searchRes}
