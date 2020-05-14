@@ -43,7 +43,15 @@ module.exports = {
     },
 
     init: function () {
-        utils.createMainTab(exId, __("Search"), __("Her kan du søge i rapporterne. I feltet skrives de ønskede søgeord. Der søges fra venstre side af hele ord. Fx for at finde ordet 'kviksølv', starter du med at skrive 'kvik...' og der vil dukke rapporter op med ord, som starter med 'kvik'. Hvis der skrives 'sølv', vil ordet 'kviksølv' ikke blive fundet."), require('./../../../browser/modules/height')().max);
+        utils.createMainTab(exId, __("Search"), __(`
+                Her kan du søge i rapporterne. der er 4 felter at skrive i.<br><br>
+                <b>Tags</b>: er forudbestemte ord, som er valgt ud fra indholdet i de enkelte rapporter. Tryk på "hent excelark med mulige tags" og se hvilke ord det er muligt at søge på.<br><br>
+                <b>Tekst</b>: er en fritekstsøgning. Du kan skrive et eller flere ord, og programmet vil søge i titler, tags, områder og i selve rapporten, hvis denne er i en udgave, der kan læses af systemet. Der kan søges i 59 af de 272 rapporter.<br><br>
+                <b>Områder</b>: Her kan du vælge et specifikt område fra en dropdown menu.<br><br>
+                <b>Referencer</b>: i 2018 er der udarbejdet en historisk redegørelse, hvor der i bilag 2 er vist referencenr. Disse nr. kan du søge direkte på.<br><br>
+                 
+                I feltet skrives de ønskede søgeord. Der søges fra venstre side af hele ord. Fx for at finde ordet 'kviksølv', starter du med at skrive 'kvik...' og der vil dukke rapporter op med ord, som starter med 'kvik'. Hvis der skrives 'sølv', vil ordet 'kviksølv' ikke blive fundet.
+                Ønsker du at søge på to ord, sættes der mellemrum mellem ordene.`), require('./../../../browser/modules/height')().max);
 
         var currentSearcher = {};
 
@@ -81,8 +89,6 @@ module.exports = {
                     {this.props.value} {this.props.count ? " (" + this.props.count + ")" : ""}
                 </a>;
             }
-
-
         }
 
         class SearchList extends React.Component {
@@ -195,7 +201,7 @@ module.exports = {
                 this.handleMouseOut = this.handleMouseOut.bind(this);
                 this.handleSearcherClick = this.handleSearcherClick.bind(this);
                 this.selectSearcher = this.selectSearcher.bind(this);
-
+                this.handleReset = this.handleReset.bind(this);
             }
 
             componentWillMount() {
@@ -347,12 +353,26 @@ module.exports = {
 
             handleChange(e) {
                 e.persist();
-
                 this.delayedCallback(e);
             }
 
             handleCheck(e) {
                 this.doSearch(this.state.currentSearcherName, this.state.searchTerm)
+            }
+
+            handleReset() {
+                _searchers["Harboøre Tange"].searcher.clearBlue();
+                document.getElementById("tag-search").value = '';
+                document.getElementById("text-search").value = '';
+                document.getElementById("omraade-search").value = '';
+                document.getElementById("ref-search").value = '';
+                let searchObj = {
+                    textValue: '__dummy__',
+                    tagValue: '__dummy__',
+                    omraadeValue: '__dummy__',
+                    refValue: 999999,
+                };
+                this.doSearch('', searchObj);
             }
 
             doSearch(searcherName, _searchTerm, e) {
@@ -448,19 +468,19 @@ module.exports = {
 
                             <div className="form-group">
                                 <input id="tag-search" className="form-control" type="text" ref={(input) => this.tagValue = input}
-                                       placeholder="Tag" onChange={this.handleChange} value={this.state.tagValue}>
+                                       placeholder="Tag" onChange={this.handleChange}>
                                 </input>
                             </div>
 
                             <div className="form-group">
                                 <input id="text-search" className="form-control" type="text" ref={(input) => this.textValue = input}
-                                       placeholder="Tekst" onChange={this.handleChange} value={this.state.textValue}>
+                                       placeholder="Tekst" onChange={this.handleChange}>
                                 </input>
                             </div>
 
                             <div className="form-group">
                                 <select id="omraade-search" className="form-control" ref={(input) => this.omraadeValue = input} onChange={this.handleChange}
-                                        value={this.state.omraadeValue} defaultValue={"Vælg område"}>
+                                        defaultValue={"Vælg område"}>
                                     <option disabled>Vælg område</option>
                                     <option value={""}></option>
                                     <option value={"rønland"}>rønland</option>
@@ -473,9 +493,12 @@ module.exports = {
                             </div>
 
                             <div className="form-group">
-                                <input id="text-search" className="form-control" type="text" ref={(input) => this.refValue = input}
-                                       placeholder="Reference" onChange={this.handleChange} value={this.state.refValue}>
+                                <input id="ref-search" className="form-control" type="text" ref={(input) => this.refValue = input}
+                                       placeholder="Reference" onChange={this.handleChange}>
                                 </input>
+                            </div>
+                            <div>
+                                <button className="btn btn-xs" onClick={this.handleReset}>Nulstil</button>
                             </div>
 
                             {searcherButton}
