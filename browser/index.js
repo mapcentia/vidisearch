@@ -480,9 +480,8 @@ module.exports = {
 
                             <div className="form-group">
                                 <select id="omraade-search" className="form-control" ref={(input) => this.omraadeValue = input} onChange={this.handleChange}
-                                        defaultValue={"Vælg område"}>
-                                    <option disabled>Vælg område</option>
-                                    <option value={""}></option>
+                                        defaultValue={""}>
+                                    <option value={""} disabled>Vælg område</option>
                                     <option value={"rønland"}>rønland</option>
                                     <option value={"gl fabrik"}>gl fabrik</option>
                                     <option value={"høfde 42"}>høfde 42</option>
