@@ -28,8 +28,8 @@ var mapObj;
 
 var legend;
 
-var showdown = require('showdown');
-var converter = new showdown.Converter();
+var marked = require('marked');
+var mustache = require('mustache');
 
 var exId = "meta";
 
@@ -128,7 +128,7 @@ module.exports = {
             html = (meta !== null
                 && typeof meta.meta_desc !== "undefined"
                 && meta.meta_desc !== "") ?
-                converter.makeHtml(meta.meta_desc) : abstract;
+                marked(meta.meta_desc) : abstract;
             layerId = searchTerm.split(".")[0] + "." + searchTerm.split(".")[1];
 
             moment.locale('da');
@@ -141,7 +141,7 @@ module.exports = {
                 }
             }
 
-            html = html ? Mustache.render(html, properties) : "";
+            html = html ? mustache.render(html, properties) : "";
 
             let comp =
                 <div>
