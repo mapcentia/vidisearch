@@ -7,6 +7,8 @@ var React = require('react');
 
 var ReactDOM = require('react-dom');
 
+var debounce = require('lodash/debounce');
+
 var cloud;
 
 var utils;
@@ -193,7 +195,7 @@ module.exports = {
             }
 
             componentWillMount() {
-                this.delayedCallback = _.debounce(function (e) {
+                this.delayedCallback = debounce(function (e) {
                     // `e.target` is accessible now
                     var me = this;
                     let val = e.target.value;
